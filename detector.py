@@ -7,8 +7,8 @@ import sqlite3
 
 detector= cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-rec=cv2.createLBPHFaceRecognizer();
-rec.load("recognizer/trainningData.yml")
+rec=cv2.face.LBPHFaceRecognizer_create()
+rec.read("recognizer/trainningData.yml")
 id=0
 def getProfile(id):
     conn=sqlite3.connect("FaceBase.db")
@@ -23,7 +23,7 @@ def getProfile(id):
 
     
 cap = cv2.VideoCapture(0)    
-font = cv2.cv.InitFont(cv2.cv.CV_FONT_HERSHEY_COMPLEX_SMALL, 5, 1, 0, 4) 
+font = cv2.FONT_HERSHEY_SIMPLEX
 while(True):
     ret, img = cap.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -33,15 +33,12 @@ while(True):
         id,conf=rec.predict(gray[y:y+h,x:x+w])
         profile=getProfile(id)
         if(profile!=None):
-            cv2.cv.PutText(cv2.cv.fromarray(img),str(profile[1]),(x,y+h+30),font,255)#Draw the text
-            cv2.cv.PutText(cv2.cv.fromarray(img),str(profile[2]),(x,y+h+60),font,255)#Draw the text
-            cv2.cv.PutText(cv2.cv.fromarray(img),str(profile[3]),(x,y+h+90),font,255)#Draw the text
-            cv2.cv.PutText(cv2.cv.fromarray(img),str(profile[4]),(x,y+h+120),font,255)#Draw the text
-            
-        
-        
+            cv2.putText(img,str(profile[1]),(x,y+h+30),font,1,255)#Draw the text
+            cv2.putText(img,str(profile[2]),(x,y+h+60),font,1,255)#Draw the text
+            cv2.putText(img,str(profile[3]),(x,y+h+90),font,1,255)#Draw the text
+            cv2.putText(img,str(profile[4]),(x,y+h+120),font,1,255)#Draw the text
 
-    cv2.imshow('frame',img)
+    cv2.imshow('Press q to quit',img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
     
