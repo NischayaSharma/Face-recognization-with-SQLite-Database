@@ -34,9 +34,6 @@ while(True):
         profile=getProfile(id)
         if(profile!=None):
             cv2.putText(img,str(profile[1]),(x,y+h+30),font,1,255)#Draw the text
-            cv2.putText(img,str(profile[2]),(x,y+h+60),font,1,255)#Draw the text
-            cv2.putText(img,str(profile[3]),(x,y+h+90),font,1,255)#Draw the text
-            cv2.putText(img,str(profile[4]),(x,y+h+120),font,1,255)#Draw the text
 
     cv2.imshow('Press q to quit',img)
     if cv2.waitKey(1) & 0xFF == ord('q'):

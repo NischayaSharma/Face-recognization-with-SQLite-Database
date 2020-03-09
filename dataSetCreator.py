@@ -1,30 +1,28 @@
 import numpy as np
 import cv2
 import sqlite3
+import os
+import shutil
+
 cap = cv2.VideoCapture(0)
 detector= cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-def insertOrUpdate(Id,Name):
+def convertToBinaryData(filename):
+    with open(filename, 'rb') as file:
+        blobData = file.read()
+    return blobData
+
+def insert(Name,img):
     conn=sqlite3.connect("FaceBase.db")
-    cmd="SELECT * FROM People WHERE ID="+str(Id)
-    cursor=conn.execute(cmd)
-    isRecordExist=0
-    for row in cursor:
-        isRecordExist=1
-    if(isRecordExist==1):
-           cmd="UPDATE people SET Name=' "+str(name)+" ' WHERE ID="+str(Id)
- 
-    else:
-         cmd="INSERT INTO people(ID,Name) Values("+str(Id)+",' "+str(name)+" ' )"
-      
-    conn.execute(cmd)
+    cmd="INSERT INTO people(name,face) Values(?,?)"
+    conn.execute(cmd,(Name,img))
     conn.commit()
     conn.close()
-    
-    
-id=int(input('enter user id'))
+
+def cleanup():
+    shutil.rmtree("dataSet")
+
 name=str(input('enter your name'))
-insertOrUpdate(id,name)
 sampleNum=0
 
 while(True):
@@ -33,15 +31,20 @@ while(True):
     faces = detector.detectMultiScale(gray, 1.3, 5)
     for (x,y,w,h) in faces:
         sampleNum=sampleNum+1
-        cv2.imwrite("dataSet/User."+str(id)+"."+str(sampleNum)+".jpg",gray[y:y+h,x:x+w])
+        if sampleNum == 1:
+            os.mkdir("dataSet")
+        cv2.imwrite("dataSet/User."+str(sampleNum)+".jpg",gray[y:y+h,x:x+w])
+        face = convertToBinaryData("dataSet/User."+str(sampleNum)+".jpg")
+        insert(name,face)
         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
         cv2.waitKey(100)
 
     cv2.imshow('Face',img)
     cv2.waitKey(1)
-    if(sampleNum>20):
+    if(sampleNum>300):
         break
-    
+
+cleanup()
 cap.release()
 cv2.destroyAllWindows()
 
