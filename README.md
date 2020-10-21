@@ -17,5 +17,6 @@ Thanks to OpenCV, coding facial recognition is now easier than ever. There are t
 
 <h2>Follow this step now: </h2>
 1. To check if all the dependencies are installed and the project will run, run `IntroPy.py` <br>
-2. If `IntroPy.py` runs, then to train the recognizer run `trainner.py` <br>
-3. After training the code, its time to test it out so run `detector.py`<br>
+2. If `IntroPy.py` runs, then create the data set by running datasetCreator.py<br>
+3. Now to train the recognizer run `trainner.py` <br>
+4. After training the code, its time to test it out so run `detector.py`<br>
